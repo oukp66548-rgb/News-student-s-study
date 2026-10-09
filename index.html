@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Grade Calculator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Khmer OS Battambang", "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #eef2ff, #f8fafc);
+            padding: 30px 15px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            text-align: center;
+            color: #4f46e5;
+            margin-bottom: 20px;
+        }
+
+        .student-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        /* Subject Card */
+        .subject-card {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .subject-title {
+            background: linear-gradient(90deg, #6366f1, #818cf8);
+            color: white;
+            padding: 15px 20px;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .subject-content {
+            padding: 20px;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .score-item label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .score-item input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .maximum {
+            color: #888;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* Result */
+        .subject-result {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .result-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .result-box h4 {
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .result-box p {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+        /* Button */
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #4f46e5;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 25px;
+        }
+
+        .calculate-btn:hover {
+            background: #4338ca;
+        }
+
+        /* Final Result */
+        .final-result {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .final-result h2 {
+            text-align: center;
+            color: #4f46e5;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #6366f1;
+            color: white;
+        }
+
+        .overall {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .overall-box {
+            background: #eef2ff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .overall-box h3 {
+            color: #555;
+            font-size: 15px;
+        }
+
+        .overall-box p {
+            font-size: 25px;
+            font-weight: bold;
+            color: #4f46e5;
+            margin-top: 5px;
+        }
+
+        .pass {
+            color: green !important;
+        }
+
+        .fail {
+            color: red !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 800px) {
+
+            .score-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .subject-result {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .student-info {
+                grid-template-columns: 1fr;
+            }
+
+            .overall {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .score-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .subject-result {
+                grid-template-columns: 1fr;
+            }
+
+            .overall {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+
+        <h1>📚 Student Grade Calculator</h1>
+
+        <div class="student-info">
+
+            <div class="input-group">
+                <label>Student Name</label>
+                <input
+                    type="text"
+                    id="studentName"
+                    placeholder="Enter student name">
+            </div>
+
+            <div class="input-group">
+                <label>Student ID</label>
+                <input
+                    type="text"
+                    id="studentId"
+                    placeholder="Enter student ID">
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= HTML ================= -->
+    <div class="subject-card">
+
+        <div class="subject-title">
+            1. HTML
+        </div>
+
+        <div class="subject-content">
+
+            <div class="score-grid">
+
+                <div class="score-item">
+                    <label>Attendance (5%)</label>
+                    <input type="number" id="htmlAttendance"
+                           min="0" max="5">
+                    <div class="maximum">Maximum 5 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Participation (5%)</label>
+                    <input type="number" id="htmlParticipation"
+                           min="0" max="5">
+                    <div class="maximum">Maximum 5 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Quizzes (10%)</label>
+                    <input type="number" id="htmlQuizzes"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Lab Assignment (10%)</label>
+                    <input type="number" id="htmlLab"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Mini-Project (10%)</label>
+                    <input type="number" id="htmlProject"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Mid-Term (20%)</label>
+                    <input type="number" id="htmlMid"
+                           min="0" max="20">
+                    <div class="maximum">Maximum 20 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Final Exam (40%)</label>
+                    <input type="number" id="htmlFinal"
+                           min="0" max="40">
+                    <div class="maximum">Maximum 40 marks</div>
+                </div>
+
+            </div>
+
+            <div class="subject-result">
+
+                <div class="result-box">
+                    <h4>Mid-Term</h4>
+                    <p id="htmlMidResult">0 / 20</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Final Exam</h4>
+                    <p id="htmlFinalResult">0 / 40</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Total Score</h4>
+                    <p id="htmlTotalResult">0 / 100</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Grade</h4>
+                    <p id="htmlGrade">-</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= CSS ================= -->
+    <div class="subject-card">
+
+        <div class="subject-title">
+            2. CSS
+        </div>
+
+        <div class="subject-content">
+
+            <div class="score-grid">
+
+                <div class="score-item">
+                    <label>Attendance (5%)</label>
+                    <input type="number" id="cssAttendance"
+                           min="0" max="5">
+                    <div class="maximum">Maximum 5 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Participation (5%)</label>
+                    <input type="number" id="cssParticipation"
+                           min="0" max="5">
+                    <div class="maximum">Maximum 5 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Quizzes (10%)</label>
+                    <input type="number" id="cssQuizzes"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Lab Assignment (10%)</label>
+                    <input type="number" id="cssLab"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Mini-Project (10%)</label>
+                    <input type="number" id="cssProject"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Mid-Term (20%)</label>
+                    <input type="number" id="cssMid"
+                           min="0" max="20">
+                    <div class="maximum">Maximum 20 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Final Exam (40%)</label>
+                    <input type="number" id="cssFinal"
+                           min="0" max="40">
+                    <div class="maximum">Maximum 40 marks</div>
+                </div>
+
+            </div>
+
+            <div class="subject-result">
+
+                <div class="result-box">
+                    <h4>Mid-Term</h4>
+                    <p id="cssMidResult">0 / 20</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Final Exam</h4>
+                    <p id="cssFinalResult">0 / 40</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Total Score</h4>
+                    <p id="cssTotalResult">0 / 100</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Grade</h4>
+                    <p id="cssGrade">-</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <div class="subject-card">
+
+        <div class="subject-title">
+            3. JavaScript
+        </div>
+
+        <div class="subject-content">
+
+            <div class="score-grid">
+
+                <div class="score-item">
+                    <label>Attendance (5%)</label>
+                    <input type="number" id="jsAttendance"
+                           min="0" max="5">
+                    <div class="maximum">Maximum 5 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Participation (5%)</label>
+                    <input type="number" id="jsParticipation"
+                           min="0" max="5">
+                    <div class="maximum">Maximum 5 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Quizzes (10%)</label>
+                    <input type="number" id="jsQuizzes"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Lab Assignment (10%)</label>
+                    <input type="number" id="jsLab"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Mini-Project (10%)</label>
+                    <input type="number" id="jsProject"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Mid-Term (20%)</label>
+                    <input type="number" id="jsMid"
+                           min="0" max="20">
+                    <div class="maximum">Maximum 20 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Final Exam (40%)</label>
+                    <input type="number" id="jsFinal"
+                           min="0" max="40">
+                    <div class="maximum">Maximum 40 marks</div>
+                </div>
+
+            </div>
+
+            <div class="subject-result">
+
+                <div class="result-box">
+                    <h4>Mid-Term</h4>
+                    <p id="jsMidResult">0 / 20</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Final Exam</h4>
+                    <p id="jsFinalResult">0 / 40</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Total Score</h4>
+                    <p id="jsTotalResult">0 / 100</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Grade</h4>
+                    <p id="jsGrade">-</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= REACT ================= -->
+    <div class="subject-card">
+
+        <div class="subject-title">
+            4. React
+        </div>
+
+        <div class="subject-content">
+
+            <div class="score-grid">
+
+                <div class="score-item">
+                    <label>Attendance (5%)</label>
+                    <input type="number" id="reactAttendance"
+                           min="0" max="5">
+                    <div class="maximum">Maximum 5 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Participation (5%)</label>
+                    <input type="number" id="reactParticipation"
+                           min="0" max="5">
+                    <div class="maximum">Maximum 5 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Quizzes (10%)</label>
+                    <input type="number" id="reactQuizzes"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Lab Assignment (10%)</label>
+                    <input type="number" id="reactLab"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Mini-Project (10%)</label>
+                    <input type="number" id="reactProject"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Mid-Term (20%)</label>
+                    <input type="number" id="reactMid"
+                           min="0" max="20">
+                    <div class="maximum">Maximum 20 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Final Exam (40%)</label>
+                    <input type="number" id="reactFinal"
+                           min="0" max="40">
+                    <div class="maximum">Maximum 40 marks</div>
+                </div>
+
+            </div>
+
+            <div class="subject-result">
+
+                <div class="result-box">
+                    <h4>Mid-Term</h4>
+                    <p id="reactMidResult">0 / 20</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Final Exam</h4>
+                    <p id="reactFinalResult">0 / 40</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Total Score</h4>
+                    <p id="reactTotalResult">0 / 100</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Grade</h4>
+                    <p id="reactGrade">-</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= PHP ================= -->
+    <div class="subject-card">
+
+        <div class="subject-title">
+            5. PHP
+        </div>
+
+        <div class="subject-content">
+
+            <div class="score-grid">
+
+                <div class="score-item">
+                    <label>Attendance (5%)</label>
+                    <input type="number" id="phpAttendance"
+                           min="0" max="5">
+                    <div class="maximum">Maximum 5 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Participation (5%)</label>
+                    <input type="number" id="phpParticipation"
+                           min="0" max="5">
+                    <div class="maximum">Maximum 5 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Quizzes (10%)</label>
+                    <input type="number" id="phpQuizzes"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Lab Assignment (10%)</label>
+                    <input type="number" id="phpLab"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Mini-Project (10%)</label>
+                    <input type="number" id="phpProject"
+                           min="0" max="10">
+                    <div class="maximum">Maximum 10 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Mid-Term (20%)</label>
+                    <input type="number" id="phpMid"
+                           min="0" max="20">
+                    <div class="maximum">Maximum 20 marks</div>
+                </div>
+
+                <div class="score-item">
+                    <label>Final Exam (40%)</label>
+                    <input type="number" id="phpFinal"
+                           min="0" max="40">
+                    <div class="maximum">Maximum 40 marks</div>
+                </div>
+
+            </div>
+
+            <div class="subject-result">
+
+                <div class="result-box">
+                    <h4>Mid-Term</h4>
+                    <p id="phpMidResult">0 / 20</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Final Exam</h4>
+                    <p id="phpFinalResult">0 / 40</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Total Score</h4>
+                    <p id="phpTotalResult">0 / 100</p>
+                </div>
+
+                <div class="result-box">
+                    <h4>Grade</h4>
+                    <p id="phpGrade">-</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Calculate Button -->
+    <button class="calculate-btn" onclick="calculateAll()">
+        🧮 Calculate Result
+    </button>
+
+
+    <!-- FINAL RESULT -->
+    <div class="final-result">
+
+        <h2>📊 Overall Student Result</h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Score</th>
+                    <th>Grade</th>
+                    <th>GPA</th>
+                </tr>
+            </thead>
+
+            <tbody id="resultTable">
+
+            </tbody>
+
+        </table>
+
+
+        <div class="overall">
+
+            <div class="overall-box">
+                <h3>Total Score</h3>
+                <p id="overallTotal">0 / 500</p>
+            </div>
+
+            <div class="overall-box">
+                <h3>Average</h3>
+                <p id="average">0</p>
+            </div>
+
+            <div class="overall-box">
+                <h3>GPA</h3>
+                <p id="overallGPA">0.00</p>
+            </div>
+
+            <div class="overall-box">
+                <h3>Result</h3>
+                <p id="overallResult">-</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // Get input value
+    function getValue(id) {
+        return parseFloat(document.getElementById(id).value) || 0;
+    }
+
+
+    // Calculate one subject
+    function calculateSubject(prefix) {
+
+        let attendance =
+            getValue(prefix + "Attendance");
+
+        let participation =
+            getValue(prefix + "Participation");
+
+        let quizzes =
+            getValue(prefix + "Quizzes");
+
+        let lab =
+            getValue(prefix + "Lab");
+
+        let project =
+            getValue(prefix + "Project");
+
+        let mid =
+            getValue(prefix + "Mid");
+
+        let final =
+            getValue(prefix + "Final");
+
+
+        // Total = 100
+        let total =
+            attendance +
+            participation +
+            quizzes +
+            lab +
+            project +
+            mid +
+            final;
+
+
+        // Grade
+        let grade;
+
+        if (total >= 95) {
+            grade = "A";
+        }
+        else if (total >= 90) {
+            grade = "B";
+        }
+        else if (total >= 80) {
+            grade = "C";
+        }
+        else if (total >= 70) {
+            grade = "D";
+        }
+        else if (total >= 60) {
+            grade = "E";
+        }
+        else {
+            grade = "F";
+        }
+
+
+        // GPA
+        let gpa;
+
+        if (total >= 95) {
+            gpa = 4.0;
+        }
+        else if (total >= 90) {
+            gpa = 3.5;
+        }
+        else if (total >= 80) {
+            gpa = 3.0;
+        }
+        else if (total >= 70) {
+            gpa = 2.5;
+        }
+        else if (total >= 60) {
+            gpa = 2.0;
+        }
+        else {
+            gpa = 0.0;
+        }
+
+
+        return {
+            attendance,
+            participation,
+            quizzes,
+            lab,
+            project,
+            mid,
+            final,
+            total,
+            grade,
+            gpa
+        };
+    }
+
+
+    // Calculate all subjects
+    function calculateAll() {
+
+        let html = calculateSubject("html");
+        let css = calculateSubject("css");
+        let js = calculateSubject("js");
+        let react = calculateSubject("react");
+        let php = calculateSubject("php");
+
+
+        // Show result inside each subject
+        showSubjectResult("html", html);
+        showSubjectResult("css", css);
+        showSubjectResult("js", js);
+        showSubjectResult("react", react);
+        showSubjectResult("php", php);
+
+
+        // Overall
+        let total =
+            html.total +
+            css.total +
+            js.total +
+            react.total +
+            php.total;
+
+
+        let average = total / 5;
+
+
+        // Overall GPA
+        let gpa =
+            (
+                html.gpa +
+                css.gpa +
+                js.gpa +
+                react.gpa +
+                php.gpa
+            ) / 5;
+
+
+        let result =
+            average >= 60
+                ? "Passed"
+                : "Failed";
+
+
+        // Show overall table
+        document.getElementById("resultTable").innerHTML = `
+
+            <tr>
+                <td>HTML</td>
+                <td>${html.total.toFixed(2)} / 100</td>
+                <td>${html.grade}</td>
+                <td>${html.gpa.toFixed(2)}</td>
+            </tr>
+
+            <tr>
+                <td>CSS</td>
+                <td>${css.total.toFixed(2)} / 100</td>
+                <td>${css.grade}</td>
+                <td>${css.gpa.toFixed(2)}</td>
+            </tr>
+
+            <tr>
+                <td>JavaScript</td>
+                <td>${js.total.toFixed(2)} / 100</td>
+                <td>${js.grade}</td>
+                <td>${js.gpa.toFixed(2)}</td>
+            </tr>
+
+            <tr>
+                <td>React</td>
+                <td>${react.total.toFixed(2)} / 100</td>
+                <td>${react.grade}</td>
+                <td>${react.gpa.toFixed(2)}</td>
+            </tr>
+
+            <tr>
+                <td>PHP</td>
+                <td>${php.total.toFixed(2)} / 100</td>
+                <td>${php.grade}</td>
+                <td>${php.gpa.toFixed(2)}</td>
+            </tr>
+
+        `;
+
+
+        document.getElementById("overallTotal").innerText =
+            total.toFixed(2) + " / 500";
+
+        document.getElementById("average").innerText =
+            average.toFixed(2);
+
+        document.getElementById("overallGPA").innerText =
+            gpa.toFixed(2);
+
+        document.getElementById("overallResult").innerText =
+            result;
+
+
+        if (result === "Passed") {
+            document.getElementById("overallResult")
+                .classList.add("pass");
+
+            document.getElementById("overallResult")
+                .classList.remove("fail");
+        }
+        else {
+            document.getElementById("overallResult")
+                .classList.add("fail");
+
+            document.getElementById("overallResult")
+                .classList.remove("pass");
+        }
+    }
+
+
+    // Show result for each subject
+    function showSubjectResult(prefix, data) {
+
+        document.getElementById(prefix + "MidResult")
+            .innerText =
+            data.mid + " / 20";
+
+
+        document.getElementById(prefix + "FinalResult")
+            .innerText =
+            data.final + " / 40";
+
+
+        document.getElementById(prefix + "TotalResult")
+            .innerText =
+            data.total.toFixed(2) + " / 100";
+
+
+        document.getElementById(prefix + "Grade")
+            .innerText =
+            data.grade;
+    }
+
+</script>
+
+</body>
+</html>
